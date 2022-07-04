@@ -4,7 +4,7 @@
   - [OWASP TOP 10: What's New](#owasp-top-10-whats-new)
   - [Data Sources for the Top 10](#data-sources-for-the-top-10)
   - [Understanding Category Metrics](#understanding-category-metrics)
-    - [Common Weaknesses Enumeration (`CWE`) Mapped](#common-weaknesses-enumeration-cwe-mapped)
+    - [Common Weaknesses Enumeration (CWE) Mapped](#common-weaknesses-enumeration-cwe-mapped)
     - [Max Incidence Rate](#max-incidence-rate)
     - [Average Incidence Rate](#average-incidence-rate)
     - [Average Weighted Exploit](#average-weighted-exploit)
@@ -12,7 +12,7 @@
     - [Max Coverage](#max-coverage)
     - [Average Coverage](#average-coverage)
     - [Total Occurrences](#total-occurrences)
-    - [Total `CVEs` (Common Vulnerabilities Enumeration)](#total-cves-common-vulnerabilities-enumeration)
+    - [Total CVEs (Common Vulnerabilities Enumeration)](#total-cves-common-vulnerabilities-enumeration)
   - [Top 10 Categories](#top-10-categories)
     - [1st - Broken Access Control](#1st---broken-access-control)
     - [2nd - Cryptographic Failures](#2nd---cryptographic-failures)
@@ -23,11 +23,21 @@
     - [7th - Identification and Authentication Failures](#7th---identification-and-authentication-failures)
     - [8th - Software and Data Integrity Failures](#8th---software-and-data-integrity-failures)
     - [9th - Security Logging and Monitoring Failures](#9th---security-logging-and-monitoring-failures)
-    - [10th - Server-Side Request Forgery (`SSRF`)](#10th---server-side-request-forgery-ssrf)
+    - [10th - Server-Side Request Forgery (SSRF)](#10th---server-side-request-forgery-ssrf)
     - [Beyond Top 10 (3 Additional)](#beyond-top-10-3-additional)
       - [Code Quality Issues](#code-quality-issues)
-      - [Denial of Service (`DoS`)](#denial-of-service-dos)
+      - [Denial of Service (DoS)](#denial-of-service-dos)
       - [Memory Management Errors](#memory-management-errors)
+  - [New Categories in the Top 10](#new-categories-in-the-top-10)
+    - [Understanding Insecure Design](#understanding-insecure-design)
+      - [Impact](#impact)
+      - [Defense](#defense)
+    - [Software and Data Integrity Failures](#software-and-data-integrity-failures)
+      - [Impact](#impact-1)
+      - [Defense](#defense-1)
+    - [Server-Side Request Forgery (SSRF)](#server-side-request-forgery-ssrf)
+      - [Impact](#impact-2)
+      - [Defense](#defense-2)
 
 # OWASP
 
@@ -72,7 +82,7 @@ Metrics in the 2021 top 10
 
 ## Understanding Category Metrics
 
-### Common Weaknesses Enumeration (`CWE`) Mapped
+### Common Weaknesses Enumeration (CWE) Mapped
 
 These are the common ways a software can be consider weak
 
@@ -191,7 +201,7 @@ From the data, out of all applications tested by companies providing the data:
 - Broken access control - **318,487** applications
 - Server-Side Request Forgery (`SSRF`) - **9,503** applications
 
-### Total `CVEs` (Common Vulnerabilities Enumeration)
+### Total CVEs (Common Vulnerabilities Enumeration)
 
 - Common Vulnerabilities Enumeration (`CVE`)
 - `CVEs` mapped to `CWEs`
@@ -290,7 +300,7 @@ This shows the number of `CVEs` that are mapped to `CWEs` in this category. It g
 - I has the lowest average weighted impact with 4.99 (average 6.44), and is difficult to test for, giving the second lowest average coverage of **39.97%** (average 43.91).
 - It also has the lowest number of `CVEs` at 242.
 
-### 10th - Server-Side Request Forgery (`SSRF`)
+### 10th - Server-Side Request Forgery (SSRF)
 
 - `SSRF` did actually make it into the `Additional risks to considre` in 2017
 - It also comes from the community survey (not data)
@@ -310,7 +320,7 @@ This shows the number of `CVEs` that are mapped to `CWEs` in this category. It g
 
 > Luckily, a lot of these problems can at least be easily highlighted by using `static code analysis` tools that look through code for these common mistakes.
 
-#### Denial of Service (`DoS`)
+#### Denial of Service (DoS)
 
 - Can an attacker do something that will cause all or part of your website to no longer be usable?
 - With enough load any website can fail
@@ -326,3 +336,157 @@ This shows the number of `CVEs` that are mapped to `CWEs` in this category. It g
   - They are not perfect
   - There are often compiler flags that can weaken or strengthen them
   - Static code analysis that will highlight problems.
+
+## New Categories in the Top 10
+
+### Understanding Insecure Design
+
+- Number 4 of the top 10
+- 40 `CWEs`
+- Not the cause of the other categories
+- Design and architectural decisions
+  - Insecure design is all about design an even architectural decisions made for a web application and its key components.
+- Other categories are implementation issues
+  - E.g. using a SQL database is by design
+  - SQL injection is an implementation problem
+
+**Insecure Design - Metrics**
+
+| Item                     | Value   |
+| ------------------------ | ------- |
+| `CWEs` mapped            | 40      |
+| Max incidence rate       | 24.19%  |
+| Average incidence rate   | 3.00%   |
+| Average weighted exploit | 6.46    |
+| Average weighted impact  | 6.78    |
+| Max coverage             | 77.25%  |
+| Average coverage         | 42.51%  |
+| Total occurrences        | 262,407 |
+| Total `CVEs`             | 2,691   |
+
+**Insecure Design - `CWEs`**
+
+- `CWE-311` Missing encryption of sensitive data
+
+  - Passwords stores in database not encrypted
+  - Passwords sorted in cookies as plain text
+
+- `CWE-522` Insufficient protected credentials
+
+  - Credentials in configuration files
+
+- `CWE-434` Unrestricted upload of files with dangerous type
+
+  - Upload any file type
+  - Could files be malicious?
+
+- `CWE-598` Use of `GET` request method with sensitive query strings
+- `CWE-602` Client-side enforcement of server-side security
+- `CWE-656` Reliance on security through obscurity
+
+#### Impact
+
+It's very difficult to pin down exactly what the impact of getting this wrong would be.
+
+- Large number of `CWEs` makes this complex
+- It may take a lot of effort to fix
+
+#### Defense
+
+How do we ensure we have a secure design?
+
+- Understand and use secure patterns
+- Threat modeling
+  - Assessing threats
+  - Understanding defenses
+- User stories
+  - Consider if there's a security impact
+
+### Software and Data Integrity Failures
+
+- Various risky points for integrity
+- Risks to Code
+  - Code is being created and checked into a repository and there are lots of bad things that could happen to it, it's very common to need third-party libraries or plugins. You could write that functionality yourself, but that would take a lot of effort.
+  - Free/open source/paid libraries, any of this could be compromised by an attacker before you start using it and it could be quiet difficult to known that.
+  - Code being checked into your own repository could be given back doors or intentional vulnerabilities if members of the development team chose to act maliciously or perhaps their credentials were stolen.
+    - CI/CD can be used to autonomously or semi-autonomously deploy web applications.
+- Installing dependencies
+- Dependency confusion
+
+**Software and Data Integrity Failures - Metrics**
+
+| Item                     | Value  |
+| ------------------------ | ------ |
+| `CWEs` mapped            | 10     |
+| Max incidence rate       | 16.67% |
+| Average incidence rate   | 2.05%  |
+| Average weighted exploit | 6.94   |
+| Average weighted impact  | 7.94   |
+| Max coverage             | 75.04% |
+| Average coverage         | 45.35% |
+| Total occurrences        | 47,972 |
+| Total `CVEs`             | 1,152  |
+
+**Software and Data Integrity Failures - CWEs**
+
+- `CWE-502` Deserialization of untrusted data
+  - External `XML` entities (`XXE`)
+- `CWE-345` Insufficient verification of data authenticity
+  - Is data trusted?
+- `CWE-829` Inclusion of functionality from untrusted control sphere
+  - Content delivery network (`CND`)
+  - Dependency confusion
+- Do we trust data / third-party code?
+
+#### Impact
+
+- Highest average weighted Impact
+- Often means remote code execution
+
+#### Defense
+
+- Digital signatures
+  - Digital signatures are good for ensuring third-party software hasn't changed.
+  - This works for installed software and is good for JavaScript packages too.
+- Enforce code review
+- Secure CI/CD environments
+- Dependency check
+  - Tools such as `OWASP Dependency-Check` are important to check for known vulnerabilities in libraries being used.
+- Trusting third-party code is challenging
+  - Every update is a potential risk, and all of these defenses help.
+  - Waiting a period of time before using a new release could allow time for malicious code to be revealed, but then that goes against the advice to stay up to date.
+  - Review every update yourself?
+
+### Server-Side Request Forgery (SSRF)
+
+The attacker can induce the application server to make a request that it wasn't intended to make.
+
+**SSRF- Metrics**
+
+| Item                     | Value  |
+| ------------------------ | ------ |
+| `CWEs` mapped            | 1      |
+| Max incidence rate       | 2.72%  |
+| Average incidence rate   | 2.72%  |
+| Average weighted exploit | 8.28   |
+| Average weighted impact  | 6.72   |
+| Max coverage             | 67.72% |
+| Average coverage         | 67.72% |
+| Total occurrences        | 9,503  |
+| Total `CVEs`             | 385    |
+
+#### Impact
+
+- Forged requests from the server
+- Confidentiality breach
+- Bypass controls e.g. firewalls
+- Internal resources may have less controls
+
+#### Defense
+
+- Multi-layered approach
+  - Is this the best design?
+  - Input validation
+    - Use an allow list
+- Don't return the raw response
+- Secure the server-side network
