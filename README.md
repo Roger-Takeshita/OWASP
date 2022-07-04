@@ -1,6 +1,6 @@
 <h1 id='table-of-contents'>Table of Contents</h1>
 
-- [OWASP](#owasp)
+- [Open Web Application Security Project - OWASP](#open-web-application-security-project---owasp)
   - [OWASP TOP 10: What's New](#owasp-top-10-whats-new)
   - [Data Sources for the Top 10](#data-sources-for-the-top-10)
   - [Understanding Category Metrics](#understanding-category-metrics)
@@ -38,8 +38,26 @@
     - [Server-Side Request Forgery (SSRF)](#server-side-request-forgery-ssrf)
       - [Impact](#impact-2)
       - [Defense](#defense-2)
+  - [The Effect on Security Roles](#the-effect-on-security-roles)
+    - [Security Architecture and Engine](#security-architecture-and-engine)
+      - [Insecure Design](#insecure-design)
+      - [Software and Data Integrity Failures](#software-and-data-integrity-failures-1)
+      - [Server-Side Request Forgery](#server-side-request-forgery)
+    - [Risk Management](#risk-management)
+      - [Governance](#governance)
+      - [Risk](#risk)
+      - [Compliance](#compliance)
+    - [Defense](#defense-3)
+      - [Insecure Design](#insecure-design-1)
+      - [Software and Data Integrity Failures](#software-and-data-integrity-failures-2)
+      - [Server-Side Request Forgery](#server-side-request-forgery-1)
+    - [Penetration Testing](#penetration-testing)
+      - [offensive Security](#offensive-security)
+      - [Web Application Penetration Testing](#web-application-penetration-testing)
+      - [Network Penetration Testing](#network-penetration-testing)
+    - [Red Teaming](#red-teaming)
 
-# OWASP
+# Open Web Application Security Project - OWASP
 
 ## OWASP TOP 10: What's New
 
@@ -401,6 +419,7 @@ How do we ensure we have a secure design?
   - Understanding defenses
 - User stories
   - Consider if there's a security impact
+- **Shift left**
 
 ### Software and Data Integrity Failures
 
@@ -490,3 +509,223 @@ The attacker can induce the application server to make a request that it wasn't 
     - Use an allow list
 - Don't return the raw response
 - Secure the server-side network
+
+## The Effect on Security Roles
+
+### Security Architecture and Engine
+
+Security team looking at OWASP top 10
+
+- Architecture and engineering
+  - The staff here look at ensuring best practices are used across various aspects of the company's infrastructure.
+- Governance, risk and compliance (`GRC`)
+  - This team helps Globomantics to make sure it meets any regulatory and compliance needs, managing risks to the business and steering it through all of the associated complexities of cybersecurity.
+- Offense
+  - The offensive security team are responsible for testing that all of their software, on-premise infrastructure, and cloud infrastructure are as secured as they can be.
+- Defense
+  - The defensive area takes care of the business's environments, ensuring that malicious files, phishing attempts, and any other types of attacks are handle quickly and decisively.
+
+Globomantics are the driving force behind creating technical solutions with security built in from the start.
+
+They secure the company's IT and also work with development teams to create secure environments and develop security best practices.
+
+#### Insecure Design
+
+- Shift left
+  - A lot of the cure for this problem is shifting left
+    - Move secure design earlier in the process
+    - Prevent wasted effort
+    - Decrease complexity
+- Threat modelling
+  - Assess threats
+  - Implement controls
+- Move further left?
+  - Use existing patterns
+  - Create reproduceable components
+
+#### Software and Data Integrity Failures
+
+- Look at infrastructure
+  - E.g. CI/CD pipelines
+- What damage could an attacker do?
+- Checks on third-party libraries?
+  - Limited sources?
+  - Consider an allow list of sources
+- Dependency checking
+  - Run in CI/CD, or regularly
+- Check hashes
+  - If the file hash of a DLL or JavaScript changes
+
+#### Server-Side Request Forgery
+
+- Web infrastructure needs increased focus
+  - Web applications are becoming increasingly important. It needs suitable security to provide layered defenses
+- Treat cloud environments like internal I.T.
+  - Antivirus
+  - SIEM (login)
+  - Network segregation
+  - Strong passwords
+  - Multi-factor
+- Ensure software is up to date
+- Minimum surface area
+
+### Risk Management
+
+#### Governance
+
+- Less focused on specific entries
+- Focus on the top 10 as a whole
+  - Impact on business strategy
+
+#### Risk
+
+- Assess likelihood of vulnerabilities
+  - Average incidence
+  - Total occurrences
+- Assess exploitability
+- Assess potential impact
+- Where should attention be focused?
+- Assist with risk calculations
+- Coverage
+- potentially more detail coming
+
+#### Compliance
+
+- Lots of standards, laws and regulations
+- Some link with the `OWASP` top 10
+
+**PCI Compliance**
+
+- Processing credit card payments
+- Payment card industry data security standard (`PCI-DSS`)
+  - `OWASP` guide
+- Vulnerability management program
+- Strong access control
+- Monitoring
+
+**PCI PA-DSS** Payment Card Industry Payment Application Data Security Standard
+
+- `PCI PA-DSS` is aimed at software developers.
+- Also mentions `OWASP`
+- Reiterates `PCI-DSS` points
+
+> Secure coding techniques to avoid common coding vulnerabilities (for example, vendor guidelines, `OWASP` top 10...)
+
+**Not a Standard**
+
+- `OWASP` top 10 is not a standard
+- Not all of it is testable
+- Application Security Verification Standard (`ASVS`)
+  - Also from `OWASP`
+  - Is testable
+  - Not tied to the top 10
+
+**ISO 27001**
+
+- Doesn't mention `OWASP`
+- Continual improvements
+  - Keep up to date
+  - Awareness of updates
+  - Apply information from them
+
+**What Else?**
+
+- Considerations differ per industry
+- Important recognize changes
+- See other coursers on compliance
+
+### Defense
+
+- Incident responders
+- Treat hunters
+- Security analysis
+- Security logging and monitoring failures
+
+#### Insecure Design
+
+- It's a wide subject
+- Common patterns of attack
+  - Picked up by web applications firewalls (`WAFs`)
+  - E.g. traversal - `../`
+  - Large number of requests
+- More common in less security mature teams
+- Some issues hard to pick up with automation
+- Rely on generic controls
+  - Logging
+  - Input validation
+  - Noticing repeated failures
+
+#### Software and Data Integrity Failures
+
+- A problem before the live environment
+- Dependency confusion:
+  - Which libraries?
+  - Which web application use them?
+  - Likely malware infection
+  - Outbound HTTP traffic
+  - Should there only be inbound HTTP?
+- Client-side JavaScript
+  - Content security policy (`CSP`)
+  - `CSP` sub-resource integrity (hashes)
+
+#### Server-Side Request Forgery
+
+- Typically follow a specific pattern
+- Can be more complex to spot:
+  - IP V4 - `127.0.0.1`
+  - IP V6 - `::1`
+  - Name - `localhost`
+  - Decimal - `2130706433`
+  - Hex - `0x7f000001`
+  - `file:///etc/passwd`
+- Logging is important
+- Primarily a confidentiality breach
+
+### Penetration Testing
+
+#### offensive Security
+
+- Web application penetration testing
+  - `OWASP` top 10 is aimed to web applications
+- Network penetration testing
+  - Less focus on the `OWASP` top 10
+- Red teaming
+  - Elements of network and web application testing
+
+#### Web Application Penetration Testing
+
+- Testing checklist
+  - Based on the 2017 `OWASP` top 10
+- `CWEs` listed for each top 10 category
+  - 196 common weakness in total
+- Penetration test results
+  - Top 10 has remediation advice
+  - Useful references
+
+#### Network Penetration Testing
+
+- Security misconfiguration
+- Vulnerable and outdated components
+- Software and data integrity failures
+  - CI/CD pipelines
+  - What are they connected to?
+- Server-Side Request Forgery
+  - Networks behind servers?
+  - Includes cloud-based network e.g. `VPC`
+
+### Red Teaming
+
+- A specific goal for engagements
+  - To gain access and control over a network or get information from employees
+  - Advanced tactics
+- Knowing the common weaknesses is useful
+
+**Red Teaming - Attacks**
+
+- Software and data integrity failures
+  - Presents a good opportunity
+  - CI/CD pipelines
+  - Dependency confusion
+  - Developer credentials
+- Server-Side Request Forgery (`SSRF`)
+  - Access to corporate network?
