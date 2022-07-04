@@ -19,6 +19,15 @@
     - [3rd - Injection](#3rd---injection)
     - [4th - Insecure Design](#4th---insecure-design)
     - [5th - Security](#5th---security)
+    - [6th - Vulnerable and Outdated Components](#6th---vulnerable-and-outdated-components)
+    - [7th - Identification and Authentication Failures](#7th---identification-and-authentication-failures)
+    - [8th - Software and Data Integrity Failures](#8th---software-and-data-integrity-failures)
+    - [9th - Security Logging and Monitoring Failures](#9th---security-logging-and-monitoring-failures)
+    - [10th - Server-Side Request Forgery (`SSRF`)](#10th---server-side-request-forgery-ssrf)
+    - [Beyond Top 10 (3 Additional)](#beyond-top-10-3-additional)
+      - [Code Quality Issues](#code-quality-issues)
+      - [Denial of Service (`DoS`)](#denial-of-service-dos)
+      - [Memory Management Errors](#memory-management-errors)
 
 # OWASP
 
@@ -32,6 +41,14 @@ What is the difference between Top 10 2017 and 2021?
     - Historical data
   - 2 Categories based on survey
     - Forward looking
+
+Focuses on underlying Issues
+
+- This should be reflected in software development
+
+Metrics
+
+- Creates a better understanding of issues
 
 ## Data Sources for the Top 10
 
@@ -83,7 +100,7 @@ The `CWEs` show you the root cause for vulnerabilities, that make it easier to f
 
   - Highest % from an organisation
   - Broken access control - **55.97%**
-  - Server-side request forgery (`SSRF`) - **2.72%**
+  - Server-Side Request Forgery (`SSRF`) - **2.72%**
 
   > The maximum incidence rate is therefore the highest incidence rate that was present in the data from a single organisation supplying that data.
 
@@ -162,7 +179,7 @@ The maximum coverage is giving us data for a potential outlier, so the average c
 
   - An average from all data suppliers
 
-- Server-side request forgery (`SSRF`) - **67.72%**
+- Server-Side Request Forgery (`SSRF`) - **67.72%**
 - Vulnerable and outdated components - **22.47%**
 
 ### Total Occurrences
@@ -172,7 +189,7 @@ Total occurrences is the number of tested applications that were found to have `
 From the data, out of all applications tested by companies providing the data:
 
 - Broken access control - **318,487** applications
-- Server-side request forgery (`SSRF`) - **9,503** applications
+- Server-Side Request Forgery (`SSRF`) - **9,503** applications
 
 ### Total `CVEs` (Common Vulnerabilities Enumeration)
 
@@ -239,3 +256,73 @@ This shows the number of `CVEs` that are mapped to `CWEs` in this category. It g
 - Configuration can be complex
 - Improper Restrictions of XML External Entities (`XXE`)
 - Password in Configuration File, this entry has the highest average weighted exploit with 8.12
+
+### 6th - Vulnerable and Outdated Components
+
+- Comes from community survey (not data)
+  - That means the security community see it as important even though the historical data doesn't match the sentiment.
+- This category is also a bit of an odd one out from the data perspective, although that's reasonable given it came from the community survey. This is the only entry with no `CVE` mappings. Really, that means that while using vulnerable and outdated components is clearly a problem, `CVE` data reflects individual vulnerabilities. `0 CVE` (average 6,332)
+- It doesn't reflect usage of vulnerable components, which is why we see no `CVEs`. That also means that the figures for exploitability and impact are defaulted to **5**, which means there's no data to form a basis for them.
+- There is only `3CWEs` (average 19.6) mapped to it, which is well below the average, and there are no `CVEs` directly mapped to those.
+- This category focuses on keeping software and components up to date, especially when there are publicly known vulnerabilities associated to them.
+
+### 7th - Identification and Authentication Failures
+
+- It was previously know as `Broken Authentication`
+- This focuses on pretty much anything to do with authentication. That's not just the process of logging in, but also weak password requirements, password recovery mechanisms, session fixation, session expiry, hard-coded credentials, and lots more.
+- There are `22 CWEs` (average 19.6) common weakness mapped here in total.
+- This is one also mentions the number 2 entry, `Crytographic Failures`, where poorly stored password also form part of authentication weaknesses. From the data perspective, it comes fairly close to average in all the categories, with the average incident rate, where it comes second bottom with **2.55%** of incident rate (average 4.18%)
+
+### 8th - Software and Data Integrity Failures
+
+- It was previously known as `Insecure Deserialization`
+- Integrity violations are generally about trusting and data that comes from outside of a trust boundary, so we're thinking about entrusted sources of code, which can be third-party or open source applications. It also includes serialized data that could be manipulated by an attacker, but is trusted by default by the server.
+
+### 9th - Security Logging and Monitoring Failures
+
+- It was previously known as `insufficient Logging and Monitoring`
+- Comes from the community survey (not data)
+- The point of it was that by having insufficient logging and monitoring, you are more likely to miss an attack happening
+  - That's known as a detective control
+  - It helps you to understand what's happening after it happened. As an attacker, it's not something you could intentionally exploit.
+- The new version now includes `CWEs` for improper output neutralization for logs, so could an attacker potentially inject something malicious into those logs.
+- There's also insertion of sensitive information into a log, which can mean leaking sensitive information.
+- I has the lowest average weighted impact with 4.99 (average 6.44), and is difficult to test for, giving the second lowest average coverage of **39.97%** (average 43.91).
+- It also has the lowest number of `CVEs` at 242.
+
+### 10th - Server-Side Request Forgery (`SSRF`)
+
+- `SSRF` did actually make it into the `Additional risks to considre` in 2017
+- It also comes from the community survey (not data)
+- It's got only one associated common weakness
+- `SSRF` focuses on client requests that then trigger requests from the server.
+  - This potentially gives an attacker the ability to make arbitrary requests from the server, and that can mean gaining access to resources that can't be directly reached across the internet, but can be reached by the server.
+
+### Beyond Top 10 (3 Additional)
+
+#### Code Quality Issues
+
+- Bad / insecure coding patterns, e.g.:
+- Time of check / time of use (`TOCTOU`)
+  - Where validation is performed on a value. If something alters the value after the validation but before the value is actually used, then the validation can be bypassed.
+- It also covers memory error such as use after free, where a program keeps a pointer to memory that it's no longer using.
+  - If an attacker can use that memory, they can execute their own code.
+
+> Luckily, a lot of these problems can at least be easily highlighted by using `static code analysis` tools that look through code for these common mistakes.
+
+#### Denial of Service (`DoS`)
+
+- Can an attacker do something that will cause all or part of your website to no longer be usable?
+- With enough load any website can fail
+- Look at resources intensive areas
+  - E.g. is a search function normally slow? Then this would be a good indication that it could be used to mount an attack.
+  - Could that slow down the entire website?
+- Perform load test to identify weaknesses
+
+#### Memory Management Errors
+
+- We're thinking about problems like buffer overflows that are traditionally associated with all the languages like C++, where it's far easier to make memory management mistakes.
+- What about `.net`, `java`, `node.js` etc?
+  - They are not perfect
+  - There are often compiler flags that can weaken or strengthen them
+  - Static code analysis that will highlight problems.
