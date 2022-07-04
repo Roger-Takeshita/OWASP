@@ -56,6 +56,7 @@
       - [Web Application Penetration Testing](#web-application-penetration-testing)
       - [Network Penetration Testing](#network-penetration-testing)
     - [Red Teaming](#red-teaming)
+- [OWASP Top 10: API Security Playbook](#owasp-top-10-api-security-playbook)
 
 # Open Web Application Security Project - OWASP
 
@@ -729,3 +730,94 @@ They secure the company's IT and also work with development teams to create secu
   - Developer credentials
 - Server-Side Request Forgery (`SSRF`)
   - Access to corporate network?
+
+# OWASP Top 10: API Security Playbook
+
+**`OWASP` Top 10 vs `OWASP` API Security Top 10**
+
+- OWASP Top 10
+
+  - Web application specific
+
+- OWASP API Security Top 10
+  - Application Programming Interface
+    - Mobile applications
+    - Web applications
+    - IoT
+  - Overlap in vulnerabilities
+
+**Goal of the `OWASP` API Top 10**
+
+- Education
+
+  > ... educate those involved in API development and maintenance
+
+- Security throughout development lifecycle
+
+  - Problems caught earlier
+
+- Who is it aimed at?
+
+  > ... developers, designers, architects, managers, or organizations
+
+**Risk Factors - Exploitability**
+
+| Attack Vectors | Security Weakness                           | Impacts          |
+| -------------- | ------------------------------------------- | ---------------- |
+| Exploitability | Weakness Prevalence, Weakness Detectability | Technical Impact |
+
+- **Exploitability**
+
+  - Available tools
+
+    - Some vulnerabilities have tools to help
+    - Some tools might help an attacker a little while others might automate the complete exploitation process.
+
+- **User Interaction**
+
+  - The need for user interaction can alter how exploitable some issues are.
+  - Some vulnerabilities they are just waiting to be exploited, while others need a user to perform actions
+
+- **Repeatability**
+
+  - It might need circumstances outside of the control of the attacker to work.
+
+- **Privileges**
+
+  - Privilege might also be required.
+  - The attacker might need a login to an API in order to exploit the vulnerability
+
+- **Prevalence**
+
+  - This shows us how common a vulnerability is.
+  - Things that might impact prevalence is:
+
+    - Lack of awareness
+    - Complicated concepts
+
+      - Something that is complicated has a much greater chance to be implemented incorrectly
+
+  - Immature tools
+
+    - Perhaps they don't have secure default settings or just haven't been around long enough for people to notice the issues they have.
+
+  - Lack of time
+
+    - If security features take time to implement, then they are less likely to get done.
+
+- **Detectability**
+
+  - Tells us how easy it is to find a vulnerability.
+  - Vulnerabilities that are harder to detect might still have tools, or generate false positives, meaning they might have to be verified often manually.
+    - This means less detectable vulnerabilities are likely to need brainpower to find them. The more skilled the attacker, the more likely they are to find the vulnerability.
+
+- **Technical Impact**
+
+  - CIA triad
+
+    - Confidentiality
+    - Integrity
+    - Availability
+
+  - Technical impacts are typically grouped into confidentiality, integrity and availability, also known as the `CIA` triad. Confidentiality and integrity typically refer to data, and the impact on confidentiality means information that wasn't intended to be shared has been exposed. An example is one user having access to data belonging to another user. An impact on integrity means that data has been changed when the change shouldn't have been allowed.
+  - An impact on availability means that something has been made unavailable.
