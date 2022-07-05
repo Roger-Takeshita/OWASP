@@ -68,6 +68,13 @@
     - [Credential Stuffing](#credential-stuffing)
     - [JSON Web Token (JWT)](#json-web-token-jwt)
     - [API Keys](#api-keys)
+  - [Excessive Data Exposure](#excessive-data-exposure)
+    - [Attack](#attack)
+    - [Defense](#defense-4)
+  - [Lack of Resources and Rate Limiting](#lack-of-resources-and-rate-limiting)
+    - [Attack](#attack-1)
+    - [Rate Limiting Risks](#rate-limiting-risks)
+    - [Rate Limiting Defense](#rate-limiting-defense)
 
 # Open Web Application Security Project - OWASP
 
@@ -760,15 +767,10 @@ They secure the company's IT and also work with development teams to create secu
 **Goal of the `OWASP` API Top 10**
 
 - Education
-
   > ... educate those involved in API development and maintenance
-
 - Security throughout development lifecycle
-
   - Problems caught earlier
-
 - Who is it aimed at?
-
   > ... developers, designers, architects, managers, or organizations
 
 **Risk Factors - Exploitability**
@@ -780,7 +782,6 @@ They secure the company's IT and also work with development teams to create secu
 - **Exploitability**
 
   - Available tools
-
     - Some vulnerabilities have tools to help
     - Some tools might help an attacker a little while others might automate the complete exploitation process.
 
@@ -802,18 +803,12 @@ They secure the company's IT and also work with development teams to create secu
 
   - This shows us how common a vulnerability is.
   - Things that might impact prevalence is:
-
     - Lack of awareness
     - Complicated concepts
-
       - Something that is complicated has a much greater chance to be implemented incorrectly
-
   - Immature tools
-
     - Perhaps they don't have secure default settings or just haven't been around long enough for people to notice the issues they have.
-
   - Lack of time
-
     - If security features take time to implement, then they are less likely to get done.
 
 - **Detectability**
@@ -848,15 +843,12 @@ What does it mean `Broken Object Level Authorization`?
 - 1st - Exploitability
 
   - Easy to exploit
-
     - It's generally easy to exploit this vulnerability once it's been found. All an attacker needs to do is change an identifier in a request, and they've potentially got access to objects they shouldn't be accessing.
 
 - 2nd - Prevalence
 
   - Very common
-
     - This is a very common vulnerability
-
   - Linked to API functionality
   - Why so Prevalent?
     - The first big reason is that the security control simply hasn't been implemented.
@@ -868,13 +860,9 @@ What does it mean `Broken Object Level Authorization`?
 - 3rd - Detectability
 
   - Difficult for tools
-
     - Automated tools wouldn't normally find this, as it tends to take a least a little bit of brain power.
-
   - Easy for humans
-
   - Steps:
-
     1. Find the ID
        - URL
        - Body
@@ -884,7 +872,6 @@ What does it mean `Broken Object Level Authorization`?
        - Authorzed
        - Not authorized
        - Not found
-
   - Technical impact
     - If object level authorization is broken, then a lot of bad things can happen
   - `Burp Suite` tool that can help to rapidly make API calls with guesses for what object IDs are.
@@ -936,7 +923,6 @@ What does it mean `Broken Object Level Authorization`?
   - Who you are
 
 - **Authorization**
-
   - What you're allowed to do
 
 #### Authentication Components
@@ -1037,3 +1023,162 @@ The attacker takes advantage of whatever that vulnerability is and uses it to re
   - Not in source code
   - Not in client applications
   - Message singing
+
+## Excessive Data Exposure
+
+Useful or excessive?
+
+- Excess records
+
+  - Get users
+  - Users belongs to an organization
+  - Get users in my organization
+
+- `PII` (Personal Identifiable Information)
+  - Confidential
+
+### Attack
+
+- **Exploitability**
+
+  - Data is `invisible` to the user
+  - That data can be seen
+    - Browser developer tools
+    - Slightly more effort on mobile
+  - All you have to do is look
+
+- **Prevalence**
+
+  - Very common
+  - Assumption no-one will look
+  - Tooling enables rapid development
+    - Added fields would be exposed
+  - Done intentionally
+    - Might be useful in the future
+    - Save on development time
+
+- **Detectability**
+
+  - Not easy for automated tools
+  - Very easy for people
+
+- **Technical Impact**
+
+  - Exposed data
+  - Account takeover
+  - Laws and regulations
+  - `PII` (Personal Identifiable Information)
+    - Identity theft
+    - Fraud
+
+### Defense
+
+- Control data leaving the server
+
+  - What data can be used when
+    - `PII` (Personal Identifiable Information)
+    - Sensitive
+    - Confidential
+  - Additional code
+
+- **Returning Objects**
+
+  - Not just removing / blanking data
+  - Schema for each endpoint
+  - Filtering fields on the server
+
+## Lack of Resources and Rate Limiting
+
+- Throttling requests
+- Simultaneous requests are expected
+- Each API request uses resources
+- Too many requests cause problems
+
+### Attack
+
+- **Exploitability**
+
+  - Making requests is enough
+  - Usually from authenticated users
+  - Load test tools
+    - E.g. `JMeter`
+    - From a single machine
+    - From multiple machines
+
+- **Large File Upload**
+
+  - Upload feature
+  - Strain on resources
+  - Disk space
+  - Memory (`RAM`)
+
+- **Password Brute Force**
+
+  - Incorrect password
+    - Several tries
+    - Is it really the user?
+  - Unlimited guesses
+    - Automated tools
+    - Common password lists
+
+- **Query Parameter Tampering**
+
+  - Request large amount of records
+  - Filter records
+  - Page size
+  - Complex database queries = poor performance
+
+### Rate Limiting Risks
+
+- **Prevalence**
+
+  - Occurs in a variety of ways
+  - Load testing
+    - Put API under load
+    - Highlight potential problems
+
+- **Detectability**
+
+  - Common failure points
+    - Invalid passwords
+    - File uploads
+    - Data queries
+  - Slow response
+
+- **Technical Impact**
+
+  - Denial of service (`DoS`)
+  - Slow responses
+  - Overwhelmed database
+  - Denial of wallet
+
+### Rate Limiting Defense
+
+- Request throttling
+  - Limit requests in a time period
+  - Error if exceeded - HTTP `429`
+- Request throttling in the cloud
+  - Azure API management
+  - AWS API gateway
+- Authenticated users are easily throttled
+- Anonymous users can be harder
+
+- **Defense - Authentication**
+
+  - Anonymous access to authentication
+  - Limit number of login attempts
+    - 3-5 guesses before locking
+  - Lock account
+    - Minimum should be minutes
+    - Maximum should be contact admin
+
+- **Defense**
+
+  - File upload defense
+    - Config to limit request size
+    - Use caution if increasing
+  - Page query defense
+    - Works only when trusting user input
+    - NEVER trust input
+    - Validate maximum page size
+  - Input validation on all fields from client
