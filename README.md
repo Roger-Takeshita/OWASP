@@ -1,6 +1,8 @@
 <h1 id='table-of-contents'>Table of Contents</h1>
 
 - [Open Web Application Security Project - OWASP](#open-web-application-security-project---owasp)
+  - [Links](#links)
+- [OWASP Top 10: API Security Playbook](#owasp-top-10-api-security-playbook)
   - [OWASP TOP 10: What's New](#owasp-top-10-whats-new)
   - [Data Sources for the Top 10](#data-sources-for-the-top-10)
   - [Understanding Category Metrics](#understanding-category-metrics)
@@ -56,7 +58,7 @@
       - [Web Application Penetration Testing](#web-application-penetration-testing)
       - [Network Penetration Testing](#network-penetration-testing)
     - [Red Teaming](#red-teaming)
-- [OWASP Top 10: API Security Playbook](#owasp-top-10-api-security-playbook)
+- [OWASP Top 10: API Security Playbook](#owasp-top-10-api-security-playbook-1)
   - [Broken Object Level Authorization](#broken-object-level-authorization)
     - [Attacking](#attacking)
     - [Defense 1](#defense-1)
@@ -96,6 +98,16 @@
     - [Defense](#defense-8)
 
 # Open Web Application Security Project - OWASP
+
+## Links
+
+- [OWASP Top 10: What's New](https://app.pluralsight.com/library/courses/owasp-top-ten-whats-new/table-of-contents)
+- [OWASP Top 10: What's New Badge](https://app.pluralsight.com/achievements/share/c1d4ca60-3733-4e15-a0ce-18ebecb37669)
+
+- [OWASP Top 10: API Security Playbook](https://app.pluralsight.com/library/courses/owasp-top-ten-api-security-playbook)
+- [OWASP Top 10: API Security Playbook Badge](https://app.pluralsight.com/achievements/share/aa661f13-b290-426b-9da6-3df3bacb402e)
+
+# OWASP Top 10: API Security Playbook
 
 ## OWASP TOP 10: What's New
 
