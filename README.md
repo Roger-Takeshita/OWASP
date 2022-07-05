@@ -75,6 +75,25 @@
     - [Attack](#attack-1)
     - [Rate Limiting Risks](#rate-limiting-risks)
     - [Rate Limiting Defense](#rate-limiting-defense)
+  - [Broken Function Level Authorization](#broken-function-level-authorization)
+    - [Attack](#attack-2)
+    - [Defense](#defense-5)
+  - [Mass Assignment](#mass-assignment)
+    - [Attack](#attack-3)
+    - [Defense](#defense-6)
+  - [Security Misconfiguration](#security-misconfiguration)
+    - [CORS](#cors)
+    - [Common Security Misconfiguration](#common-security-misconfiguration)
+  - [Injection](#injection)
+    - [Attack](#attack-4)
+    - [Injection Risks](#injection-risks)
+    - [Injection Defenses](#injection-defenses)
+  - [Improper Assets Management](#improper-assets-management)
+    - [Attack](#attack-5)
+    - [Defense](#defense-7)
+  - [Insufficient Logging and Monitoring](#insufficient-logging-and-monitoring)
+    - [Effects of Insufficient Logging](#effects-of-insufficient-logging)
+    - [Defense](#defense-8)
 
 # Open Web Application Security Project - OWASP
 
@@ -106,7 +125,6 @@ Previous course `Play by Play: OWASP Top 10 2017`
 Metrics in the 2017 top 10
 
 - Scored out of 3
-
   - Exploitability
   - Prevalence
   - Detectability
@@ -285,9 +303,7 @@ This shows the number of `CVEs` that are mapped to `CWEs` in this category. It g
   - Others include operating system command injection, allowing an attacker to send their own commands to the operating system
   - Lightweight directory access protocol (`LDAP`), meaning commands can be sent to services like `Microsoft's Active Directory`
 - Cross-site scripting (`XSS`)
-
   - Cross-site scripting allows an attacker to manipulate and scripting to a web page.
-
 - Total occurrences at **274,000** (average 157,103), and the highest number of `CVEs` at **32.000** (average 6,332)
 
 ### 4th - Insecure Design
@@ -404,19 +420,13 @@ This shows the number of `CVEs` that are mapped to `CWEs` in this category. It g
 **Insecure Design - `CWEs`**
 
 - `CWE-311` Missing encryption of sensitive data
-
   - Passwords stores in database not encrypted
   - Passwords sorted in cookies as plain text
-
 - `CWE-522` Insufficient protected credentials
-
   - Credentials in configuration files
-
 - `CWE-434` Unrestricted upload of files with dangerous type
-
   - Upload any file type
   - Could files be malicious?
-
 - `CWE-598` Use of `GET` request method with sensitive query strings
 - `CWE-602` Client-side enforcement of server-side security
 - `CWE-656` Reliance on security through obscurity
@@ -754,9 +764,7 @@ They secure the company's IT and also work with development teams to create secu
 **`OWASP` Top 10 vs `OWASP` API Security Top 10**
 
 - OWASP Top 10
-
   - Web application specific
-
 - OWASP API Security Top 10
   - Application Programming Interface
     - Mobile applications
@@ -1182,3 +1190,631 @@ Useful or excessive?
     - NEVER trust input
     - Validate maximum page size
   - Input validation on all fields from client
+
+## Broken Function Level Authorization
+
+What is broken function level authorization?
+
+- Similar to broken object level authorization
+- Function level
+
+  - API endpoints
+  - Consists of a name and verb
+  - `GET` user
+
+### Attack
+
+- **Exploitability**
+
+  - May not be simple
+  - Understand what a request looks like
+    - `JSON`
+    - Query parameters
+  - Get records
+    - No content for a list
+    - ID for single record
+  - Create records
+    - Need to know field names
+
+- **Prevalence**
+
+  - Can be missing completely
+  - Authorization checks
+    - Hard coded
+    - Configured
+  - Complexity causes problems
+
+- **Detectability**
+
+  - Normally RESTful
+    - What each verb does
+    - Common URL format
+    - `GET` / user
+    - `GET` / user / 123456
+  - Easier to guess
+    - `/admin`
+    - Tools to help
+
+- **Technical Impact**
+
+  - Depends on the endpoints
+    - `/admin` is a common target
+    - allows a user more:
+  - Control of data
+    - functionality
+
+### Defense
+
+- Hiding endpoints doesn't work
+- Role based access
+
+  - Admin, user, etc...
+  - Assign roles to users
+  - Roles access endpoints
+
+- **Subject-object-action**
+
+  - Subject: `Admin`
+  - Object: `User`
+  - Action: `Create`, `Update`, `Delete`
+
+- **Implementing Role Based Access**
+
+  - Subject-object-action
+    - Multiple records for each role
+    - Access denied without a record
+  - Secure Coding: Preventing Broken Access Control
+  - Automated testing
+    - New endpoints automatically included
+    - Granted access should work
+    - All others should fail
+
+## Mass Assignment
+
+What is mass assignment?
+
+- Endpoints you can access
+- API calls include data
+- Data converted to objects in API
+  - Automatic binding
+- Attacker can add fields to data
+  - Object might contain additional fields
+
+### Attack
+
+- **Exploitability**
+
+  - Find valid fields
+  - Endpoints we can already access
+  - Which fields?
+    - Something the API uses
+    - Not just stored
+  - How to find them
+    - Guess using tools
+    - Documentation
+    - Ask the API
+
+- **Prevalence**
+
+  - Automatic binding is very common
+  - Simple, re-usable code
+    - Still need thought to security
+    - Binding single object on multiple endpoints
+
+- **Detectability**
+
+  - Not easy to detect
+  - Need to try additional fields
+  - Effect might not be obvious
+
+- **Technical Impact**
+
+  - Add or update properties
+  - API dependent
+
+### Defense
+
+- Block field names
+  - Block `role`
+  - Update on new fields
+- Allowed field names
+  - Secure by default
+- Differ per endpoint, e.g.
+
+  - Create is admin only, allows role
+  - Admin update allow role
+  - Regular user update doesn't allow role
+
+- Class defines endpoints object
+  - Specific to the endpoint
+  - Binding only those fields
+- More effort to manage object
+
+## Security Misconfiguration
+
+What is security misconfiguration?
+
+- Something is vulnerable
+- Software can be:
+  - Insecure to start
+    - Should be secure by default
+    - Features disabled
+  - Made insecure
+  - Become vulnerable
+- Configuration can be complicated
+
+- **Areas of Risk**
+
+  - Any level of an application stack
+    - Network services
+    - Operating system
+    - Web server
+    - Frameworks
+    - Database
+    - Virtual machines
+    - Containers
+    - Etc
+
+- **Exploitability**
+
+  - Large surface area
+
+- **Prevalence**
+
+  - Very common
+
+- **Detectability**
+
+  - May be tools to assist
+
+- **Impact**
+
+  - Information exposure to server compromise
+
+### CORS
+
+- Cross origin resource sharing
+- Used by browsers
+- JavaScript requests
+- Same origin policy
+
+- **CORS Headers**
+
+  - Make a hole in the SOP
+  - Access-Control-Allow-Origin
+    - Allow access to other domains
+    - Can be `*`
+  - Access-Control-Allow-Credentials
+    - `True` / `False`
+    - Is request allowed with credentials
+
+- **CORS Failure**
+
+  - Allowing access to other domains
+  - Access-Control-Allow-Origin: `*`
+    - Not allowed with credentials
+  - Request
+    - Origin header
+  - Response
+    - Access-Control-Allow-Origin: `{Origin}`
+
+- **Attack**
+
+  - Malicious website
+    - User must be logged in to API
+    - Make an API request
+    - Attach credentials
+    - View response content
+
+- **Defense**
+
+  - Don't use source origin header
+  - Implement an allowed domain list
+    - Maintain a list of domains
+    - Consult on each request
+    - Add to Access-Control-Allow-Origin
+  - Requires code
+
+### Common Security Misconfiguration
+
+- **Unused Components**
+
+  - Installed by default
+  - No longer useful
+  - Adds to security surface area
+  - Increased complexity to Maintain
+
+  - Which components?
+    - Operating system
+      - FTP, Telnet, SSH
+    - Additional software
+      - web servers, databases, remote desktop services
+    - Code dependencies
+      - Packages, libraries, open-source libraries
+
+- **Missing Security Patches**
+
+  - Patch management process
+    - Inventory of versions and components of all the software that you use
+    - Monitor for vulnerabilities
+    - Move away from unmaintained software
+  - Not always simple
+    - Not everything can update itself
+    - Simplify where possible
+    - Remove anything unused
+
+- **TLS**
+
+  - Transport layer security
+    - Secure sockets layer (`SSL`)
+    - Encrypts web traffic
+    - Various versions
+  - Potential Problems
+    - Can be missing
+    - Lots to configure
+
+- **Verbose Errors**
+
+  - Uncaught errors
+  - Verbose output
+    - Connection strings
+    - Stack traces
+  - Can be useful in development
+  - Disable in production
+    - Enable generic errors
+    - Handle them correctly
+
+- **Security Headers**
+
+  - Contained in API responses
+  - Information headers (recommended to remove)
+    - server: `Microsoft-ISS/10.0`
+    - `x-powered-by: ASP.NET`
+  - Security headers
+    - CORS
+    - Strict-Transport-Security
+
+## Injection
+
+> Injection is an attacker's attempt to send data to an application in a way that will change the meaning of the command being sent to an interpreter
+
+What is injection?
+
+- What is an interpreter?
+  - Executes instructions
+  - Specific syntax
+- A browser interprets instructions
+  - HTML
+  - CSS
+  - JavaScript
+- Web pages allow interaction
+  - Control over the HTML from the server
+  - Form the basis of an attack
+
+### Attack
+
+- **Exploitability**
+
+  - Malicious requests to interpreter via API
+  - Usually from authenticated users
+  - What software the interpreter uses
+  - What version is running
+  - Vulnerability might not be in the API
+
+- **SQL Injection**
+
+  - Using the SQL language
+  - Code creates a SQL command for the database
+
+- **NoSQL Injection**
+
+  - Becoming a lot more common
+  - No standing syntax
+  - Often support scripting
+
+- **HTML Injection**
+
+  - APIs don't usually respond with HTML
+  - JavaScript calls the API
+  - Inserts response into the page
+
+### Injection Risks
+
+- **Prevalence**
+
+  - Database injections
+    - SQL
+    - NoSQL
+  - Operating system command injection
+  - HTML injection
+  - XML injection
+
+- **Detectability**
+
+  - Can be detected by a human
+  - Much easier using automation
+    - Inject common strings
+    - Asses lots of fields and endpoints
+  - Injection might cause errors
+    - API then return errors
+    - Detailed errors help attackers
+  - Database injection
+    - Return excess data
+    - Pause operation
+
+- **Technical Impact**
+
+  - Can do what the interpreter can
+  - Database queries
+    - Data from any table
+    - Delete tables
+    - Run operating system commands
+  - OS command injection calls the OS
+  - HTML injection might allow account access
+
+### Injection Defenses
+
+- **Input Validation**
+
+  - Validate all inputs
+  - Focus on strings
+    - Check length
+    - What characters should be allowed?
+    - Create an allow list of characters
+
+- **Sanitize Input**
+
+  - Replace characters or strings
+    - `<script>`
+    - Replace part or all of it
+  - Which interpreter is this aimed at?
+  - Use a library
+
+- **Encoding**
+
+  - Injected HTML
+    - `<a href="malicious.url"></a>`
+  - Encoding
+    - `&lt;a href="malicious.url"&gt;&lt;/a&gt;`
+    - Not valid HTML
+    - Other content not altered
+  - Various types of encoding
+    - URL, CSS, JSON, etc
+
+- **SQL Injection**
+
+  - Don't concatenate string
+    - Manually creating SQL increases risks
+  - Elements of a query
+    - Query syntax
+    - Parameters
+  - Parameterized queries
+
+- **SQL Defenses**
+
+  - Object relational mapper (`ORM`)
+    - Returns data as objects
+    - Queries handle parameters for you
+  - Store procedures
+    - Declared in the database
+    - Calling a method with parameters
+
+- **Web Application Firewall (`WAF`)**
+
+  - Designed to prevent injection
+  - API traffic goes to `WAF`
+    - Rejected if malicious
+    - Forwarded to your server
+  - Not perfect
+
+## Improper Assets Management
+
+What is assets do you have?
+
+- Environments
+
+  - Copies of the environments
+    - Dev
+    - QA / test
+    - Demo
+    - Pre-Production
+    - Etc
+  - Versions of the API
+
+- **Potential Assets**
+
+  - Shared resources
+    - Network
+    - Database
+      - Production data
+    - Credentials
+  - Across environments
+  - Across versions
+
+### Attack
+
+- **Environments**
+
+  - Best security in the newest environment
+    - Stronger defenses e.g. firewall
+  - Weaker environments
+    - Information gathering
+    - Access to shared resources
+
+- **API Versions**
+
+  - Newer versions have better security
+    - More recently tested
+    - Fixed vulnerabilities
+
+- **Prevalence - Environments**
+
+  - Multiple API environments are common
+  - A common way to work
+  - Environments can cost very little
+  - Small cost can beman lack of security
+  - Environments can share components
+
+- **Prevalence - API Versions**
+
+  - New API versions introduce new functionality
+  - Old versions still work
+    - Lots of customers
+    - Difficult to move them to new API
+  - Pressure to keep old versions
+  - Reluctance to maintain old versions
+
+- **Detectability - Environments**
+
+  - Using sub-domains is common
+    - `test.globmantics.com`
+    - `dev.globmantics.com`
+  - Where to find environments
+    - Documentation
+    - Code that calls the API
+    - Web pages
+  - Internet repositories
+    - DNS records
+    - TLS records
+
+- **Detectability - API Versions**
+
+  - Versions can be easier to find
+    - Version number in URL
+    - May be in request header
+
+- **Impact**
+
+  - Might allow:
+    - Gathering information
+    - Bypass defenses like firewalls
+    - Access via old, vulnerable code
+  - Server compromise
+  - Database breach
+
+### Defense
+
+- Know your surface area
+  - Environments
+  - API versions
+- Assess risks
+
+  - Data
+  - Resources
+  - Existing controls
+
+- **Environments**
+
+  - Don't share production data
+  - Don't share resources
+  - Production will require access from the internet
+  - Other environments might not
+    - Host internally?
+    - Restrict access by IP address
+  - Do you need all the environments?
+
+- **API Versions**
+
+  - Get rid of old versions
+  - If you do keep them
+    - Maintain them
+    - Consider security
+    - Apply patches
+    - Match current version where possible
+
+## Insufficient Logging and Monitoring
+
+What is Insufficient Logging and Monitoring?
+
+- Detective controls
+  - Happen often actions
+  - Help you to look at the actions
+- Doesn't stop attacks
+- Enables response to attacks
+
+- **Logging**
+
+  - When: `Date and time`
+  - Where: `The application, code location, API endpoint, etc`
+  - Who: `User identity, source (e.g. IP address)`
+  - What: `Description, flags to allow grouping`
+
+- **Monitoring**
+
+  - Identify malicious activity
+  - Centralized repository
+  - Start with a baseline
+  - Identify increases above baseline
+  - Create alert
+
+### Effects of Insufficient Logging
+
+- **Exploitability**
+
+  - No real attack
+  - Attacks won't be noticed
+    - Leads to more problems
+  - Noticing attacks allows you to:
+    - Slow them down
+    - Make them less impactful
+    - Stop them
+
+- **Prevalence**
+
+  - Logging can be complicated
+    - Too much is hard to use and expensive
+    - Too little skips valuable information
+    - Just right takes experience
+  - Sometimes there's no monitoring
+
+- **Breach Detection**
+
+  - Time in days to detect a breach by industry
+
+- **Detectability**
+
+  - How does an attacker know?
+  - Would need access to logs
+
+- **Impact**
+
+  - Attacks go unnoticed
+  - Hard to see what attackers have done
+
+### Defense
+
+- Know when we're under attack
+- Log the right things
+  - `OWASP` API Top 10 entries
+- Assess what happened in an attack
+
+- **Areas to Log**
+
+  - Authentication
+
+    - Success and failure
+    - We want to log when people log in correctly and when they fail
+    - Increases in these might indicate credential stuffing or credential guessing attacks
+    - Forgotten password, would be useful too
+
+  - Access control
+    - Failures
+    - Can be used to highlight attacks where someone is trying to identify API endpoints that might missing protections
+  - Input validation
+    - Server-side
+      - Can hightlight an attacker trying to probe for injection-type vulnerabilities
+  - Sessions
+    - Token modification
+    - Here an attacker might try to modify cookies or JSON Web Token
+    - If invalid session are presented, this is a good thing to log
+  - High value
+    - If your API has a concept of high-value transactions
+    - Someone making payments
+    - Admin being Created
+
+- **Test the Solution**
+
+  - Penetration tests
+    - Perform realistic attacks
+  - Check logging and monitoring
+  - Get some hacking skills
