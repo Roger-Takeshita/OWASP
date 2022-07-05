@@ -57,6 +57,17 @@
       - [Network Penetration Testing](#network-penetration-testing)
     - [Red Teaming](#red-teaming)
 - [OWASP Top 10: API Security Playbook](#owasp-top-10-api-security-playbook)
+  - [Broken Object Level Authorization](#broken-object-level-authorization)
+    - [Attacking](#attacking)
+    - [Defense 1](#defense-1)
+    - [Defense 2](#defense-2)
+  - [Broken User Authentication](#broken-user-authentication)
+    - [Understanding Broken Authorization](#understanding-broken-authorization)
+      - [Authentication Components](#authentication-components)
+    - [Insecure Password Storage](#insecure-password-storage)
+    - [Credential Stuffing](#credential-stuffing)
+    - [JSON Web Token (JWT)](#json-web-token-jwt)
+    - [API Keys](#api-keys)
 
 # Open Web Application Security Project - OWASP
 
@@ -821,3 +832,208 @@ They secure the company's IT and also work with development teams to create secu
 
   - Technical impacts are typically grouped into confidentiality, integrity and availability, also known as the `CIA` triad. Confidentiality and integrity typically refer to data, and the impact on confidentiality means information that wasn't intended to be shared has been exposed. An example is one user having access to data belonging to another user. An impact on integrity means that data has been changed when the change shouldn't have been allowed.
   - An impact on availability means that something has been made unavailable.
+
+## Broken Object Level Authorization
+
+This means that the authorization applied to data isn't being done as it should. This leads to access being granted when it shouldn't be.
+
+What does it mean `Broken Object Level Authorization`?
+
+- Broken Object Level Authorization has in the past known as Insecure direct object reference (`IDOR`)
+- Object
+  - A value or group of values
+
+### Attacking
+
+- 1st - Exploitability
+
+  - Easy to exploit
+
+    - It's generally easy to exploit this vulnerability once it's been found. All an attacker needs to do is change an identifier in a request, and they've potentially got access to objects they shouldn't be accessing.
+
+- 2nd - Prevalence
+
+  - Very common
+
+    - This is a very common vulnerability
+
+  - Linked to API functionality
+  - Why so Prevalent?
+    - The first big reason is that the security control simply hasn't been implemented.
+    - Lack of authorization
+      - No code exists to perform Checks
+    - Human error
+      - People make mistakes E.g. in an API mixing sensitive and non-sensitve data
+
+- 3rd - Detectability
+
+  - Difficult for tools
+
+    - Automated tools wouldn't normally find this, as it tends to take a least a little bit of brain power.
+
+  - Easy for humans
+
+  - Steps:
+
+    1. Find the ID
+       - URL
+       - Body
+       - Headers
+       - Name?
+    2. Interpret response
+       - Authorzed
+       - Not authorized
+       - Not found
+
+  - Technical impact
+    - If object level authorization is broken, then a lot of bad things can happen
+  - `Burp Suite` tool that can help to rapidly make API calls with guesses for what object IDs are.
+
+### Defense 1
+
+- The first defense is to use unpredictable IDs.
+
+- Predictable IDs
+
+  - Consecutive integers
+  - Predictable patterns
+  - File names
+
+- Unpredictable IDs
+  - GUIDs
+    - fd31faasd-fas13fd-fa3sd-fasd31-f13asd21
+    - Hard to guess
+    - Not sequential
+
+### Defense 2
+
+- Check authorization
+  - User entered ID
+  - Don't trust user input
+  - Confirm authorized access
+- Automated testing
+  - Check it works
+  - Notify when broken
+
+## Broken User Authentication
+
+### Understanding Broken Authorization
+
+- Common vulnerabilities
+
+  - Logging in
+  - Password storage
+  - JSON Web Tokens (JWTs)
+  - API keys
+
+- **What is authentication**
+
+  - Logging in
+  - Other factors, E.g. Mobile devices
+
+- **Authentication**
+
+  - Who you are
+
+- **Authorization**
+
+  - What you're allowed to do
+
+#### Authentication Components
+
+- Account creation
+
+  - Password storage
+  - Leak existing usernames
+
+- Logging in
+- Credential recovery
+- Multi-factor
+- Access token
+
+- Risk Factors
+  - Exploitability: Large surface area
+  - Prevalence: Complicated implementation, even if using a third-party
+  - Detectability: Client and server side. Often needs a little thought
+  - Impact: Information exposure to account takeover
+
+### Insecure Password Storage
+
+- Should be a secret
+
+  - Hidden on client entry
+  - Encrypted in transit using TLS (https)
+  - Securely stored
+
+- Storing Passwords Badly
+
+  - Plain text
+  - Staff can see it
+  - External attackers
+    - Use another vulnerability
+
+- Defense - Hashing
+
+  - Cryptographic hash
+
+    - String that represents the password
+    - Can't be reversed
+    - We don't know the secret
+
+  - Not encryption
+    - Encryption can be reversed
+    - We know the secret
+
+### Credential Stuffing
+
+The attacker takes advantage of whatever that vulnerability is and uses it to retrieve all the stored credentials.
+
+- Defense
+
+  - Additional information
+    - Multi-factor authentication (`MFA`)
+      - Something yo know
+      - Something you have
+      - Something you are
+    - Defeat automation
+      - CAPTCHA
+
+### JSON Web Token (JWT)
+
+- Result of success login
+- Temporary credentials
+- Short expiry
+
+- Failures
+
+  - Expiry time (exp)
+  - They often expire after 10 or 20 minutes
+
+- JWT Signratures
+
+  - Created by the API
+  - Header + payload
+    - Server-side secret
+
+- Defense
+  - Validate expiry time (exp)
+  - Validate algorithm (alg)
+  - Re-generate and check signature
+
+### API Keys
+
+- Attacks
+
+  - Key exposure
+  - Weak storage
+    - Hard coded in source
+    - Hard coded in config
+  - Exposed in client application
+  - Risk in application dependent
+    - Analytics API is acceptable
+    - Payments API is bad
+
+- Defense
+  - Not in source code
+  - Not in client applications
+  - Message singing
